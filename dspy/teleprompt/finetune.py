@@ -1,3 +1,6 @@
+import logging
+logger = logging.getLogger()
+
 import os
 import random
 import time
@@ -20,7 +23,7 @@ from .teleprompt import Teleprompter
 
 if os.environ.get("DSP_NOTEBOOK_CACHEDIR"):
     training_data_directory = os.path.join(os.environ.get("DSP_NOTEBOOK_CACHEDIR"), "compiler")
-    print(training_data_directory)
+    logger.info(training_data_directory)
 else:
     training_data_directory = "local_cache/compiler"
 
@@ -80,7 +83,7 @@ class BootstrapFinetune(Teleprompter):
     ):
         # It's usually better to supply a few-shot teacher, rather than uncompiled module (the student).
         if teacher is None:
-            print(
+            logger.info(
                 "WARNING: Using a vanilla teacher. "
                 "Are you sure you want to use BootstrapFinetune without a compiled teacher?",
             )
@@ -110,7 +113,7 @@ class BootstrapFinetune(Teleprompter):
 
         for name_ in finetune_data:
             random.Random(0).shuffle(finetune_data[name_])
-            print(name_, len(finetune_data[name_]))
+            logger.info(name_, len(finetune_data[name_]))
 
         #
         # Dump as files.
@@ -121,7 +124,7 @@ class BootstrapFinetune(Teleprompter):
             data = finetune_data[name]
             hashed_name = name + "." + Hasher.hash(data)
             output_path = os.path.join(training_data_directory, f"{hashed_name}.jsonl")
-            print(output_path)
+            logger.info(output_path)
 
             with open(output_path, "w") as f:
                 for line in data:
@@ -165,7 +168,7 @@ class BootstrapFinetune(Teleprompter):
             compiler_config_["save"] = compiler_config["save"] + "." + name
             best_ckpt_path = finetune_hf(training_data_path, target, compiler_config_)
 
-            print(f"#> Best checkpoint path: {best_ckpt_path} for {name}")
+            logger.info(f"#> Best checkpoint path: {best_ckpt_path} for {name}")
             finetune_models[name] = dsp.HFModel(model=target, checkpoint=best_ckpt_path)  # best_ckpt_path
 
         #
@@ -181,7 +184,7 @@ class BootstrapFinetune(Teleprompter):
 
             # TODO: FIXME: When we assign .lm, the Predict.forward will also set only_query=True.
             # This is correct for here but we may want to make it more explicitly restricted to finetuned models.
-            print(f"Assigning the LM of predictor {name}.")
+            logger.info(f"Assigning the LM of predictor {name}.")
 
             predictor2.lm = finetune_models[name]
             assert predictor2.demos == []

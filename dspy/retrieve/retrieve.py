@@ -1,3 +1,6 @@
+import logging
+logger = logging.getLogger()
+
 import random
 from typing import Dict, List, Optional, Union
 
@@ -51,7 +54,7 @@ class Retrieve(Parameter):
         # queries = [query_or_queries] if isinstance(query_or_queries, str) else query_or_queries
         # queries = [query.strip().split('\n')[0].strip() for query in queries]
 
-        # # print(queries)
+        # # logger.info(queries)
         # # TODO: Consider removing any quote-like markers that surround the query too.
         # k = k if k is not None else self.k
         # passages = dsp.retrieveEnsemble(queries, k=k,**kwargs)
@@ -63,7 +66,7 @@ class Retrieve(Parameter):
         )
         queries = [query.strip().split("\n")[0].strip() for query in queries]
 
-        # print(queries)
+        # logger.info(queries)
         # TODO: Consider removing any quote-like markers that surround the query too.
         k = k if k is not None else self.k
         if not with_metadata:
@@ -136,7 +139,7 @@ class RetrieveThenRerank(Parameter):
         )
         queries = [query.strip().split("\n")[0].strip() for query in queries]
 
-        # print(queries)
+        # logger.info(queries)
         # TODO: Consider removing any quote-like markers that surround the query too.
         k = k if k is not None else self.k
         if not with_metadata:

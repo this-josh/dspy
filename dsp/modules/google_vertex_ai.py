@@ -1,3 +1,6 @@
+import logging
+logger = logging.getLogger()
+
 """Module for interacting with Google Vertex AI."""
 
 from typing import Any, Dict
@@ -18,7 +21,7 @@ except ImportError:
 
 def backoff_hdlr(details):
     """Handler from https://pypi.org/project/backoff/"""
-    print(
+    logger.info(
         f"Backing off {details['wait']:0.1f} seconds after {details['tries']} tries "
         f"calling function {details['target']} with kwargs "
         f"{details['kwargs']}",
@@ -129,7 +132,7 @@ class GoogleVertexAI(LM):
 
         if self._is_gemini:
             if "candidate_count" in params and params["candidate_count"] != 1:
-                print(
+                logger.info(
                     f"As of now, Gemini only supports `candidate_count == 1` (see also https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/gemini#parameters). The current value for candidate_count of {params['candidate_count']} will be overridden.",
                 )
                 params["candidate_count"] = 1

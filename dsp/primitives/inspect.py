@@ -1,3 +1,6 @@
+import logging
+logger = logging.getLogger()
+
 # import inspect
 # import json
 # import random
@@ -76,13 +79,13 @@
 #     response = requests.post(post_url, json=data)
     
 #     if response.status_code == 201:
-#       print('Data created successfully')
+#       logger.info('Data created successfully')
 #     else:
-#       print(f'Error sending data to server: {response.status_code}')
+#       logger.info(f'Error sending data to server: {response.status_code}')
 #       return
 
 #     frontend_url = f"http://localhost:3000?id={id}"
-#     print(f"View the data here, {frontend_url}")
+#     logger.info(f"View the data here, {frontend_url}")
 
 
 #   def output_json(self, out_path):

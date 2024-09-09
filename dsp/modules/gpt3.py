@@ -1,3 +1,6 @@
+import logging
+logger = logging.getLogger()
+
 import functools
 import json
 import logging
@@ -35,7 +38,7 @@ except Exception:
 
 def backoff_hdlr(details):
     """Handler from https://pypi.org/project/backoff/"""
-    print(
+    logger.info(
         "Backing off {wait:0.1f} seconds after {tries} tries "
         "calling function {target} with kwargs "
         "{kwargs}".format(**details),

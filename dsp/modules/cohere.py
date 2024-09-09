@@ -1,3 +1,6 @@
+import logging
+logger = logging.getLogger()
+
 from typing import Any, Optional
 
 import backoff
@@ -10,14 +13,14 @@ try:
     cohere_api_error = cohere.errors.UnauthorizedError
 except ImportError:
     cohere_api_error = Exception
-    # print("Not loading Cohere because it is not installed.")
+    # logger.info("Not loading Cohere because it is not installed.")
 except AttributeError:
     cohere_api_error = Exception
 
 
 def backoff_hdlr(details):
     """Handler from https://pypi.org/project/backoff/"""
-    print(
+    logger.info(
         "Backing off {wait:0.1f} seconds after {tries} tries "
         "calling function {target} with kwargs "
         "{kwargs}".format(**details),

@@ -1,3 +1,6 @@
+import logging
+logger = logging.getLogger()
+
 import dspy
 
 from copy import deepcopy
@@ -116,7 +119,7 @@ class Avatar(dspy.Module):
 
     def forward(self, **kwargs):
         if self.verbose:
-            print("Starting the task...")
+            logger.info("Starting the task...")
         
         args = {
             "goal" : self.signature.__doc__,
@@ -140,7 +143,7 @@ class Avatar(dspy.Module):
             tool_input_query = action.tool_input_query
 
             if self.verbose:
-                print(f"Action {idx}: {tool_name} ({tool_input_query})")
+                logger.info(f"Action {idx}: {tool_name} ({tool_input_query})")
 
             if tool_name != "Finish":
                 tool_output = self._call_tool(tool_name, tool_input_query)

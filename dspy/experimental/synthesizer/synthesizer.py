@@ -1,3 +1,6 @@
+import logging
+logger = logging.getLogger()
+
 import random
 from collections.abc import Mapping
 from typing import List, Optional, Union
@@ -48,15 +51,15 @@ class Synthesizer:
         if self.config.feedback_mode == "human":
             input_keys = examples.inputs().keys()
 
-            print("-"*75)
+            logger.info("-"*75)
             print_text = "[bold blue]Generated Data:[bold blue]\n[bold red]Inputs:[bold red]\n"
             
             for key in input_keys:
                 print_text += f"\t[bold yellow]{key}[bold yellow]: [green]{examples[key]}[green]\n"
             
-            rprint(print_text)
+            rlogger.info(print_text)
             feedback = input("Provide feedback on the generated data: ")
-            print("-"*75)
+            logger.info("-"*75)
 
             return feedback
         

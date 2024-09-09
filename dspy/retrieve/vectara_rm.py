@@ -1,3 +1,6 @@
+import logging
+logger = logging.getLogger()
+
 import json
 import os
 from collections import defaultdict
@@ -115,7 +118,7 @@ class VectaraRM(dspy.Retrieve):
         )
 
         if response.status_code != 200:
-            print(
+            logger.info(
                 "Query failed %s",
                 f"(code {response.status_code}, reason {response.reason}, details "
                 f"{response.text})",

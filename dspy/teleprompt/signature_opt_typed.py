@@ -1,3 +1,6 @@
+import logging
+logger = logging.getLogger()
+
 import textwrap
 from dataclasses import dataclass
 from typing import Generic, Literal, TypeVar
@@ -200,7 +203,7 @@ def optimize_signature(
     if not named_predictors:
         raise ValueError("No unfrozen/uncompiled TypedPredictors found in the module.")
     if verbose:
-        print(f"Found {len(named_predictors)} typed predictors to optimize.")
+        logger.info(f"Found {len(named_predictors)} typed predictors to optimize.")
 
     candidates = {}
     scores = []
@@ -214,7 +217,7 @@ def optimize_signature(
         # TODO: Parallelize this
         for name, _p in named_predictors:
             if verbose:
-                print(f"Generating {initial_prompts} initial signatures for {name}...")
+                logger.info(f"Generating {initial_prompts} initial signatures for {name}...")
             info = candidates[name][0]  # Use initial info, to make sure types are identical
             generator = TypedChainOfThought(MyGenerateInstructionInitial[type(info)])
             candidates[name] += generator(
@@ -225,8 +228,8 @@ def optimize_signature(
     # Main loop of scoring + generating new candidates
     for i in range(n_iterations):
         if verbose:
-            print("\n" + "=" * 80)
-            print(f"Running eval iteration {i}...")
+            logger.info("\n" + "=" * 80)
+            logger.info(f"Running eval iteration {i}...")
 
         # Install signatures
         for name, p in named_predictors:
@@ -271,7 +274,7 @@ def optimize_signature(
                 generator.predictor.demos = demos
 
                 if verbose:
-                    print(f"Generating new signature for {name}...")
+                    logger.info(f"Generating new signature for {name}...")
                 new_signature = generator().proposed_signature
                 candidates[name].append(new_signature)
 
@@ -280,7 +283,7 @@ def optimize_signature(
     elif strategy == "best":
         i = scores.index(max(scores))
         if verbose:
-            print(f"Best signature: {i} with score: {scores[i]}")
+            logger.info(f"Best signature: {i} with score: {scores[i]}")
         for name, p in named_predictors:
             p.signature = candidates[name][i].to_signature()
     else:

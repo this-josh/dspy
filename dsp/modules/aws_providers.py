@@ -1,3 +1,6 @@
+import logging
+logger = logging.getLogger()
+
 """AWS providers for LMs."""
 
 from abc import ABC, abstractmethod
@@ -17,7 +20,7 @@ except ImportError:
 
 def backoff_hdlr(details):
     """Handler from https://pypi.org/project/backoff/."""
-    print(
+    logger.info(
         "Backing off {wait:0.1f} seconds after {tries} tries "
         "calling function {target} with kwargs "
         "{kwargs}".format(**details),

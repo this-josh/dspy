@@ -1,3 +1,6 @@
+import logging
+logger = logging.getLogger()
+
 import random
 
 import tqdm
@@ -54,9 +57,9 @@ class GSM8K:
         devset = [dspy.Example(**x).with_inputs('question') for x in devset]
         testset = [dspy.Example(**x).with_inputs('question') for x in testset]
 
-        # print(f"Trainset size: {len(trainset)}")
-        # print(f"Devset size: {len(devset)}")
-        # print(f"Testset size: {len(testset)}")
+        # logger.info(f"Trainset size: {len(trainset)}")
+        # logger.info(f"Devset size: {len(devset)}")
+        # logger.info(f"Testset size: {len(testset)}")
 
         self.train = trainset
         self.dev = devset
@@ -76,7 +79,7 @@ def parse_integer_answer(answer, only_first_line=True):
         answer = int(answer)
 
     except (ValueError, IndexError):
-        # print(answer)
+        # logger.info(answer)
         answer = 0
     
     return answer

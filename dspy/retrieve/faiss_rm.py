@@ -1,3 +1,6 @@
+import logging
+logger = logging.getLogger()
+
 """Retriever model for faiss: https://github.com/facebookresearch/faiss.
 Author: Jagane Sundar: https://github.com/jagane.
 """
@@ -56,7 +59,7 @@ class FaissRM(dspy.Retrieve):
         frm = faiss_rm.FaissRM(document_chunks)
         turbo = dspy.OpenAI(model="gpt-3.5-turbo")
         dspy.settings.configure(lm=turbo, rm=frm)
-        print(frm(["I am in the mood for Chinese food"]))
+        logger.info(frm(["I am in the mood for Chinese food"]))
         ```
 
         Below is a code snippet that shows how to use this in the forward() function of a module

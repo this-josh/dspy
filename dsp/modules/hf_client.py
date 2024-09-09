@@ -1,3 +1,6 @@
+import logging
+logger = logging.getLogger()
+
 import os
 import random
 import re
@@ -18,7 +21,7 @@ ERRORS = Exception
 
 def backoff_hdlr(details):
     """Handler from https://pypi.org/project/backoff/"""
-    print(
+    logger.info(
         "Backing off {wait:0.1f} seconds after {tries} tries "
         "calling function {target} with kwargs "
         "{kwargs}".format(**details),
@@ -47,7 +50,7 @@ class HFClientTGI(HFModel):
             **kwargs,
         }
 
-        # print(self.kwargs)
+        # logger.info(self.kwargs)
 
     def _generate(self, prompt, **kwargs):
         kwargs = {**self.kwargs, **kwargs}
@@ -71,7 +74,7 @@ class HFClientTGI(HFModel):
             payload["parameters"]["temperature"],
         )
 
-        # print(payload['parameters'])
+        # logger.info(payload['parameters'])
 
         # response = requests.post(self.url + "/generate", json=payload, headers=self.headers)
 
@@ -96,7 +99,7 @@ class HFClientTGI(HFModel):
             response = {"prompt": prompt, "choices": [{"text": c} for c in completions]}
             return response
         except Exception:
-            print("Failed to parse JSON response:", response.text)
+            logger.info("Failed to parse JSON response:", response.text)
             raise Exception("Received invalid JSON response from server")
 
 
@@ -220,7 +223,7 @@ class HFClientVLLM(HFModel):
                 return response
 
             except Exception:
-                print("Failed to parse JSON response:", response.text)
+                logger.info("Failed to parse JSON response:", response.text)
                 raise Exception("Received invalid JSON response from server")
         else:
             payload = {
@@ -248,7 +251,7 @@ class HFClientVLLM(HFModel):
                 return response
 
             except Exception:
-                print("Failed to parse JSON response:", response.text)
+                logger.info("Failed to parse JSON response:", response.text)
                 raise Exception("Received invalid JSON response from server")
 
 
@@ -282,7 +285,7 @@ class HFServerTGI:
     def close_server(self, port):
         process = subprocess.Popen(["docker", "ps"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         stdout, _ = process.communicate()
-        print(stdout)
+        logger.info(stdout)
         if stdout:
             container_ids = stdout.decode().strip().split("\n")
             container_ids = container_ids[1:]
@@ -315,7 +318,7 @@ class HFServerTGI:
                 os.path.sep + os.path.basename(self.model_weights_dir) + os.path.sep + os.path.basename(model_path)
             )
         docker_command = f"docker run --gpus {gpus} --shm-size 1g -p {port}:80 -v {self.model_weights_dir}:{os.path.sep + os.path.basename(self.model_weights_dir)} -e {env_variable} ghcr.io/huggingface/text-generation-inference:1.1.0 --model-id {model_name} --num-shard {num_shard} --max-input-length {max_input_length} --max-total-tokens {max_total_tokens} --max-best-of {max_best_of}"
-        print(f"Connect Command: {docker_command}")
+        logger.info(f"Connect Command: {docker_command}")
         docker_process = subprocess.Popen(
             docker_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True
         )
@@ -330,9 +333,9 @@ class HFServerTGI:
                 connected = True
                 break
         if not connected:
-            print("Could not connect to server. Error log:")
+            logger.info("Could not connect to server. Error log:")
             for line in output:
-                print(line)
+                logger.info(line)
             docker_process.terminate()
         docker_process.wait()
 
@@ -427,8 +430,8 @@ class Together(HFModel):
                 return response
         except Exception as e:
             if resp_json:
-                print(f"resp_json:{resp_json}")
-            print(f"Failed to parse JSON response: {e}")
+                logger.info(f"resp_json:{resp_json}")
+            logger.info(f"Failed to parse JSON response: {e}")
             raise Exception("Received invalid JSON response from server")
 
 
@@ -491,7 +494,7 @@ class Anyscale(HFModel):
             response = {"prompt": prompt, "choices": [{"text": c} for c in completions]}
             return response
         except Exception as e:
-            print(f"Failed to parse JSON response: {e}")
+            logger.info(f"Failed to parse JSON response: {e}")
             raise Exception("Received invalid JSON response from server")
 
 
@@ -520,7 +523,7 @@ class ChatModuleClient(HFModel):
             response = {"prompt": prompt, "choices": completions}
             return response
         except Exception:
-            print("Failed to parse output:", response.text)
+            logger.info("Failed to parse output:", response.text)
             raise Exception("Received invalid output")
 
 
@@ -564,7 +567,7 @@ class HFClientSGLang(HFModel):
             return response
 
         except Exception:
-            print("Failed to parse JSON response:", response.text)
+            logger.info("Failed to parse JSON response:", response.text)
             raise Exception("Received invalid JSON response from server")
 
 

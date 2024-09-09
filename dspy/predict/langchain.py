@@ -1,3 +1,6 @@
+import logging
+logger = logging.getLogger()
+
 import copy
 import random
 
@@ -103,9 +106,9 @@ class LangChainPredict(Predict, Runnable, metaclass=LangChainPredictMetaClass):
 
         pred = Prediction.from_completions([{self.output_field_key: content}], signature=signature)
 
-        # print('#> len(demos) =', len(demos))
-        # print(f"#> {prompt}")
-        # print(f"#> PRED = {content}\n\n\n")
+        # logger.info('#> len(demos) =', len(demos))
+        # logger.info(f"#> {prompt}")
+        # logger.info(f"#> PRED = {content}\n\n\n")
         dspy.settings.langchain_history.append((prompt, pred))
             
         if dsp.settings.trace is not None:
@@ -115,7 +118,7 @@ class LangChainPredict(Predict, Runnable, metaclass=LangChainPredictMetaClass):
         return output
     
     def invoke(self, d, *args, **kwargs):
-        # print(d)
+        # logger.info(d)
         return self.forward(**d)
 
 

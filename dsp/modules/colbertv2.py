@@ -1,3 +1,6 @@
+import logging
+logger = logging.getLogger()
+
 import functools
 from typing import Any, List, Optional, Union
 
@@ -94,10 +97,10 @@ class ColBERTv2RetrieverLocal:
         self.passages = passages
 
         if not load_only:
-            print(f"Building the index for experiment {self.colbert_config.experiment} with index name {self.colbert_config.index_name}")
+            logger.info(f"Building the index for experiment {self.colbert_config.experiment} with index name {self.colbert_config.index_name}")
             self.build_index()
         
-        print(f"Loading the index for experiment {self.colbert_config.experiment} with index name {self.colbert_config.index_name}")
+        logger.info(f"Loading the index for experiment {self.colbert_config.experiment} with index name {self.colbert_config.index_name}")
         self.searcher = self.get_index()
 
     def build_index(self):
@@ -105,7 +108,7 @@ class ColBERTv2RetrieverLocal:
         try:
             import colbert
         except ImportError:
-            print("Colbert not found. Please check your installation or install the module using pip install colbert-ai[faiss-gpu,torch].")
+            logger.info("Colbert not found. Please check your installation or install the module using pip install colbert-ai[faiss-gpu,torch].")
 
         from colbert import Indexer
         from colbert.infra import Run, RunConfig
@@ -117,7 +120,7 @@ class ColBERTv2RetrieverLocal:
         try:
             import colbert
         except ImportError:
-            print("Colbert not found. Please check your installation or install the module using pip install colbert-ai[faiss-gpu,torch].")
+            logger.info("Colbert not found. Please check your installation or install the module using pip install colbert-ai[faiss-gpu,torch].")
 
         from colbert import Searcher
         from colbert.infra import Run, RunConfig
@@ -156,7 +159,7 @@ class ColBERTv2RerankerLocal:
         try:
             import colbert
         except ImportError:
-            print("Colbert not found. Please check your installation or install the module using pip install colbert-ai[faiss-gpu,torch].")
+            logger.info("Colbert not found. Please check your installation or install the module using pip install colbert-ai[faiss-gpu,torch].")
         """_summary_
 
         Args:

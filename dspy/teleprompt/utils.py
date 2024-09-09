@@ -1,3 +1,6 @@
+import logging
+logger = logging.getLogger()
+
 import inspect
 import logging
 import math
@@ -73,24 +76,24 @@ def eval_candidate_program_with_pruning(
         split_score = evaluate(
             candidate_program, devset=split_trainset, display_table=0,
         )
-        print(f"{i}st split score: {split_score}")
+        logger.info(f"{i}st split score: {split_score}")
         total_eval_size += len(split_trainset)
 
         total_score += split_score * len(split_trainset)
         curr_weighted_avg_score = total_score / min((i + 1) * batch_size, len(trainset))
-        print(f"curr average score: {curr_weighted_avg_score}")
+        logger.info(f"curr average score: {curr_weighted_avg_score}")
 
         trial.report(curr_weighted_avg_score, i)
 
         # Handle pruning based on the intermediate value.
         if trial.should_prune():
-            print("Trial pruned.")
+            logger.info("Trial pruned.")
             trial_logs[trial_num]["score"] = curr_weighted_avg_score
             trial_logs[trial_num]["num_eval_calls"] = total_eval_size
             trial_logs[trial_num]["pruned"] = True
             return curr_weighted_avg_score, trial_logs, total_eval_size, True
 
-    print(f"Fully evaled score: {curr_weighted_avg_score}")
+    logger.info(f"Fully evaled score: {curr_weighted_avg_score}")
     score = curr_weighted_avg_score
 
     trial_logs[trial_num]["full_eval"] = False
@@ -120,7 +123,7 @@ def get_program_with_highest_avg_score(param_score_dict, fully_evaled_param_comb
         if key in fully_evaled_param_combos:
             continue
 
-        print(f"Best Combination: {key} with Mean = {mean}")
+        logger.info(f"Best Combination: {key} with Mean = {mean}")
 
         return program, key
 
@@ -180,11 +183,11 @@ def get_task_model_history_for_full_example(
 def print_full_program(program):
     """Print out the program's instructions & prefixes for each module."""
     for i, predictor in enumerate(program.predictors()):
-        print(f"Predictor {i}")
-        print(f"i: {get_signature(predictor).instructions}")
+        logger.info(f"Predictor {i}")
+        logger.info(f"i: {get_signature(predictor).instructions}")
         *_, last_field = get_signature(predictor).fields.values()
-        print(f"p: {last_field.json_schema_extra['prefix']}")
-        print("\n")
+        logger.info(f"p: {last_field.json_schema_extra['prefix']}")
+        logger.info("\n")
 
 
 def save_candidate_program(program, log_dir, trial_num, note=None):
@@ -422,7 +425,7 @@ def get_dspy_source_code(module):
                 if hasattr(item, 'signature') and item.signature is not None and item.signature.__pydantic_parent_namespace__['signature_name'] + "_sig" not in completed_set:
                     try:
                         header.append(inspect.getsource(item.signature))
-                        print(inspect.getsource(item.signature))
+                        logger.info(inspect.getsource(item.signature))
                     except (TypeError, OSError):
                         header.append(str(item.signature))
                     completed_set.add(item.signature.__pydantic_parent_namespace__['signature_name'] + "_sig")

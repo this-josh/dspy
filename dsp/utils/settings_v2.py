@@ -1,3 +1,6 @@
+import logging
+logger = logging.getLogger()
+
 import copy
 import threading
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -62,7 +65,7 @@ def thread_wrapper(program, parent_tid, *args, **kwargs):
 
 # Example test
 def sample_program(arg):
-    print(f"Thread {threading.get_ident()} with arg={arg} has config: {dsp_settings._get_current_config()}")
+    logger.info(f"Thread {threading.get_ident()} with arg={arg} has config: {dsp_settings._get_current_config()}")
 
 
 def main():
@@ -75,7 +78,7 @@ def main():
             for future in as_completed(futures):
                 res = future.result()
 
-        print(f"Main thread {parent_tid} config after threads: {dsp_settings._get_current_config()}")
+        logger.info(f"Main thread {parent_tid} config after threads: {dsp_settings._get_current_config()}")
 
 
 if __name__ == "__main__":

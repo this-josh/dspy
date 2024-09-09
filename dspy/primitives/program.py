@@ -1,3 +1,6 @@
+import logging
+logger = logging.getLogger()
+
 import magicattr
 
 from dspy.primitives.assertions import *
@@ -79,15 +82,15 @@ class Module(BaseModule, metaclass=ProgramMeta):
     #     if id(self) in memo:
     #         return memo[id(self)]
 
-    #     print(f"Deep copying {self.__class__.__name__}...")
+    #     logger.info(f"Deep copying {self.__class__.__name__}...")
 
     #     new_copy = copy.copy(self)
     #     memo[id(self)] = new_copy
 
     #     for k, v in self.__dict__.items():
-    #         print(f"Copying attribute {k} of type {type(v)}...")
+    #         logger.info(f"Copying attribute {k} of type {type(v)}...")
     #         setattr(new_copy, k, copy.deepcopy(v, memo))
-    #         print("Done")
+    #         logger.info("Done")
 
     #     return new_copy
 

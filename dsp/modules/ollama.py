@@ -1,3 +1,6 @@
+import logging
+logger = logging.getLogger()
+
 import datetime
 import hashlib
 from typing import Any, Literal, Optional
@@ -114,7 +117,7 @@ class OllamaLocal(LM):
             # Check if the request was successful (HTTP status code 200)
             if response.status_code != 200:
                 # If the request was not successful, print an error message
-                print(f"Error: CODE {response.status_code} - {response.text}")
+                logger.info(f"Error: CODE {response.status_code} - {response.text}")
 
             response_json = response.json()
 

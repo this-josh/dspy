@@ -1,3 +1,6 @@
+import logging
+logger = logging.getLogger()
+
 import optuna
 
 from dspy.evaluate.evaluate import Evaluate
@@ -32,9 +35,9 @@ class BootstrapFewShotWithOptuna(Teleprompter):
         # self.max_bootstrapped_demos = self.max_num_traces
         self.max_labeled_demos = max_labeled_demos
 
-        print("Going to sample between", self.min_num_samples, "and", self.max_num_samples, "traces per predictor.")
-        # print("Going to sample", self.max_num_traces, "traces in total.")
-        print("Will attempt to train", self.num_candidate_sets, "candidate sets.")
+        logger.info("Going to sample between", self.min_num_samples, "and", self.max_num_samples, "traces per predictor.")
+        # logger.info("Going to sample", self.max_num_traces, "traces in total.")
+        logger.info("Will attempt to train", self.num_candidate_sets, "candidate sets.")
 
     def objective(self, trial):
         program2 = self.student.reset_copy()
@@ -74,6 +77,6 @@ class BootstrapFewShotWithOptuna(Teleprompter):
         study = optuna.create_study(direction="maximize")
         study.optimize(self.objective, n_trials=self.num_candidate_sets)
         best_program = study.trials[study.best_trial.number].user_attrs["program"]
-        print("Best score:", study.best_value)
-        print("Best program:", best_program)
+        logger.info("Best score:", study.best_value)
+        logger.info("Best program:", best_program)
         return best_program

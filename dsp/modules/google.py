@@ -1,3 +1,6 @@
+import logging
+logger = logging.getLogger()
+
 import os
 from collections.abc import Iterable
 from typing import Any, Optional
@@ -13,12 +16,12 @@ try:
     google_api_error = GoogleAPICallError
 except ImportError:
     google_api_error = Exception
-    # print("Not loading Google because it is not installed.")
+    # logger.info("Not loading Google because it is not installed.")
 
 
 def backoff_hdlr(details):
     """Handler from https://pypi.org/project/backoff/"""
-    print(
+    logger.info(
         "Backing off {wait:0.1f} seconds after {tries} tries "
         "calling function {target} with kwargs "
         "{kwargs}".format(**details),

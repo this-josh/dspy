@@ -1,3 +1,6 @@
+import logging
+logger = logging.getLogger()
+
 import dspy
 
 from tqdm import tqdm
@@ -112,7 +115,7 @@ class AvatarOptimizer(Teleprompter):
                 return score
 
         except Exception as e:
-            print(e)
+            logger.info(e)
             
             if return_outputs:
                 return example, None, 0
@@ -154,7 +157,7 @@ class AvatarOptimizer(Teleprompter):
         neg_inputs = []
         
         avg_score, results = self.thread_safe_evaluator(trainset, actor, return_outputs=True)
-        print(f"Average Score: {avg_score}")
+        logger.info(f"Average Score: {avg_score}")
 
         for example, prediction, score in results:
             if score >= self.upper_bound:
@@ -187,13 +190,13 @@ class AvatarOptimizer(Teleprompter):
         best_score = -999 if self.optimize_for == "max" else 999
         
         for i in range(self.max_iters):
-            print(20*'=')
-            print(f"Iteration {i+1}/{self.max_iters}")
+            logger.info(20*'=')
+            logger.info(f"Iteration {i+1}/{self.max_iters}")
 
             score, pos_inputs, neg_inputs = self._get_pos_neg_results(best_actor, trainset)
-            print(f"Positive examples: {len(pos_inputs)}")
-            print(f"Negative examples: {len(neg_inputs)}")
-            print(f"Sampling {self.max_positive_inputs} positive examples and {self.max_negative_inputs} negative examples")
+            logger.info(f"Positive examples: {len(pos_inputs)}")
+            logger.info(f"Negative examples: {len(neg_inputs)}")
+            logger.info(f"Sampling {self.max_positive_inputs} positive examples and {self.max_negative_inputs} negative examples")
 
             if self.max_positive_inputs and len(pos_inputs) > self.max_positive_inputs:
                 pos_inputs = sample(pos_inputs, self.max_positive_inputs)
@@ -213,13 +216,13 @@ class AvatarOptimizer(Teleprompter):
                 feedback=feedback
             ).new_instruction
 
-            print(f"Generated new instruction: {new_instruction}")
+            logger.info(f"Generated new instruction: {new_instruction}")
 
             if (self.optimize_for == "max" and best_score < score) or (self.optimize_for == "min" and best_score > score):
                 best_actor.actor.signature = best_actor.actor.signature.with_instructions(new_instruction)
                 best_actor.actor_clone = deepcopy(best_actor.actor)
                 best_score = score
         
-        print(f"Best Actor: {best_actor}")
+        logger.info(f"Best Actor: {best_actor}")
 
         return best_actor

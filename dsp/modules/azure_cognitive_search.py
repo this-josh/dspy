@@ -1,3 +1,6 @@
+import logging
+logger = logging.getLogger()
+
 from typing import Any, Union
 
 from dsp.utils import dotdict
@@ -41,7 +44,7 @@ class AzureCognitiveSearch:
                         credential=self.credential)
 
     def __call__(self, query: str, k: int = 10) -> Union[list[str], list[dotdict]]:
-        print("""# Deprecated: This module is scheduled for removal in future releases.
+        logger.info("""# Deprecated: This module is scheduled for removal in future releases.
                 Please use the AzureAISearchRM class from dspy.retrieve.azureaisearch_rm instead.
                 For more information, refer to the updated documentation.""")
 

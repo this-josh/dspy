@@ -1,3 +1,6 @@
+import logging
+logger = logging.getLogger()
+
 import re
 
 import dspy
@@ -170,7 +173,7 @@ class ProgramOfThought(Module):
         code, output, error = self.execute_code(parsed_code)
         hop = 0
         while hop < self.max_iters and error:
-            print("Error in code execution")
+            logger.info("Error in code execution")
             input_kwargs.update({"previous_code": code, "error": error})
             code_data = self.code_regenerate(**input_kwargs)
             parsed_code, error = self.parse_code(code_data)
@@ -178,7 +181,7 @@ class ProgramOfThought(Module):
             code, output, error = self.execute_code(parsed_code)
             hop += 1
             if hop == self.max_iters:
-                print("Max hops reached. Error persists.")
+                logger.info("Max hops reached. Error persists.")
                 return None
         input_kwargs.update({"final_generated_code": code, "code_output": output})
         answer_gen_result = self.generate_answer(**input_kwargs)

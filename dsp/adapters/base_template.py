@@ -1,3 +1,6 @@
+import logging
+logger = logging.getLogger()
+
 from collections import namedtuple
 from typing import Callable
 
@@ -57,13 +60,13 @@ class BaseTemplate:
     # equality
     def __eq__(self, other):
         if set(self.kwargs.keys()) != set(other.kwargs.keys()):
-            print('here2')
+            logger.info('here2')
             return False
 
         for k in self.kwargs.keys():
             v1, v2 = self.kwargs[k], other.kwargs[k]
             if not v1 == v2:
-                print(k, v1, v2)
+                logger.info(k, v1, v2)
             
         return self.instructions == other.instructions and self.kwargs == other.kwargs
 

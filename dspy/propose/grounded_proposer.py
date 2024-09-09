@@ -1,3 +1,6 @@
+import logging
+logger = logging.getLogger()
+
 import random
 import re
 
@@ -189,7 +192,7 @@ class GenerateModuleInstruction(dspy.Module):
                     program_code=self.program_code_string, program_example=task_demos,
                 ).program_description,
             )
-            print(f"PROGRAM DESCRIPTION: {program_description}")
+            logger.info(f"PROGRAM DESCRIPTION: {program_description}")
 
             # Identify all modules
             init_pattern = r"def __init__\([\s\S]*?\):([\s\S]*?)(?=^\s*def|\Z)"
@@ -209,7 +212,7 @@ class GenerateModuleInstruction(dspy.Module):
         ).module_description
 
         # Generate an instruction for our chosen module
-        print(f"task_demos {task_demos}")
+        logger.info(f"task_demos {task_demos}")
         instruct = self.generate_module_instruction(
             dataset_description=data_summary,
             program_code=self.program_code_string,
@@ -223,9 +226,9 @@ class GenerateModuleInstruction(dspy.Module):
         )
         if hasattr(instruct, "module_description"):
             module_description = strip_prefix(instruct.module_description)
-            print(f"MODULE DESCRIPTION: {module_description}")
+            logger.info(f"MODULE DESCRIPTION: {module_description}")
         proposed_instruction = strip_prefix(instruct.proposed_instruction)
-        # print(f"PROPOSED INSTRUCTION: {proposed_instruction}")
+        # logger.info(f"PROPOSED INSTRUCTION: {proposed_instruction}")
 
         return dspy.Prediction(proposed_instruction=proposed_instruction)
 
@@ -260,7 +263,7 @@ class GroundedProposer(Proposer):
         self.data_summary = create_dataset_summary(
             trainset=trainset, view_data_batch_size=view_data_batch_size, prompt_model=prompt_model,
         )
-        print(f"DATA SUMMARY: {self.data_summary}")
+        logger.info(f"DATA SUMMARY: {self.data_summary}")
 
     def propose_instructions_for_program(
         self,
@@ -278,20 +281,20 @@ class GroundedProposer(Proposer):
         proposed_instructions = {}
 
         if self.set_tip_randomly:
-            print("Using a randomly generated configuration for our grounded proposer.")
+            logger.info("Using a randomly generated configuration for our grounded proposer.")
             # Randomly select the tip
             selected_tip_key = random.choice(list(TIPS.keys()))
             selected_tip = TIPS[selected_tip_key]
             self.use_tip = bool(
                 selected_tip,
             )
-            print(f"Selected tip: {selected_tip_key}")        
+            logger.info(f"Selected tip: {selected_tip_key}")        
 
         if self.set_history_randomly:
             # Randomly select whether or not we're using instruction history
             use_history = random.random() < 0.5
             self.use_instruct_history = use_history
-            print(f"Use history T/F: {self.use_instruct_history}")
+            logger.info(f"Use history T/F: {self.use_instruct_history}")
 
         # Create an instruction for each predictor 
         for pred_i, predictor in enumerate(program.predictors()):
@@ -359,6 +362,6 @@ class GroundedProposer(Proposer):
 
         # Log the trace used to generate the new instruction, along with the new instruction itself
         prompt_model.inspect_history(n=1)
-        print(f"PROPOSED INSTRUCTION: {proposed_instruction}")
+        logger.info(f"PROPOSED INSTRUCTION: {proposed_instruction}")
 
         return strip_prefix(proposed_instruction)

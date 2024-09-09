@@ -1,3 +1,6 @@
+import logging
+logger = logging.getLogger()
+
 
 import pandas as pd
 import tqdm
@@ -27,7 +30,7 @@ def evaluateRetrieval(fn, dev, metric=None):
     df = pd.DataFrame(data)
 
     percentage = round(100.0 * df['correct'].sum() / len(dev), 1)
-    print(f"Answered {df['correct'].sum()} / {len(dev)} ({percentage}%) correctly.")
+    logger.info(f"Answered {df['correct'].sum()} / {len(dev)} ({percentage}%) correctly.")
     df['correct'] = df['correct'].apply(lambda x: '✔️' if x else '❌')
 
     pd.options.display.max_colwidth = None
@@ -52,7 +55,7 @@ def evaluateAnswer(fn, dev, metric=EM):
     df = pd.DataFrame(data)
 
     percentage = round(100.0 * df['correct'].sum() / len(dev), 1)
-    print(f"Answered {df['correct'].sum()} / {len(dev)} ({percentage}%) correctly.")
+    logger.info(f"Answered {df['correct'].sum()} / {len(dev)} ({percentage}%) correctly.")
     df['correct'] = df['correct'].apply(lambda x: '✔️' if x else '❌')
 
     pd.options.display.max_colwidth = None
@@ -78,7 +81,7 @@ def evaluate(fn, dev, metric=EM):
     df = pd.DataFrame(data)
 
     percentage = round(100.0 * df['correct'].sum() / len(dev), 1)
-    print(f"Answered {df['correct'].sum()} / {len(dev)} ({percentage}%) correctly.")
+    logger.info(f"Answered {df['correct'].sum()} / {len(dev)} ({percentage}%) correctly.")
     df['correct'] = df['correct'].apply(lambda x: '✔️' if x else '❌')
 
     pd.options.display.max_colwidth = None

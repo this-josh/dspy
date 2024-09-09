@@ -1,3 +1,6 @@
+import logging
+logger = logging.getLogger()
+
 import random
 import re
 from typing import Union
@@ -41,9 +44,9 @@ class DummyLM(LM):
                     # We take the last answer, as the first one is just from
                     # the "Follow the following format" section.
                     answer = possible_answers[-1]
-                    print(f"DummyLM got found previous example for {prefix} with value {answer=}")
+                    logger.info(f"DummyLM got found previous example for {prefix} with value {answer=}")
                 else:
-                    print(f"DummyLM couldn't find previous example for {prefix=}")
+                    logger.info(f"DummyLM couldn't find previous example for {prefix=}")
 
             if answer is None:
                 if isinstance(self.answers, dict):
@@ -65,10 +68,10 @@ class DummyLM(LM):
             )
 
             RED, GREEN, RESET = "\033[91m", "\033[92m", "\033[0m"
-            print("=== DummyLM ===")
-            print(prompt, end="")
-            print(f"{RED}{answer}{RESET}")
-            print("===")
+            logger.info("=== DummyLM ===")
+            logger.info(prompt, end="")
+            logger.info(f"{RED}{answer}{RESET}")
+            logger.info("===")
 
         # Simulate processing and storing the request and response.
         history_entry = {

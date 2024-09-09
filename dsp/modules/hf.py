@@ -1,3 +1,6 @@
+import logging
+logger = logging.getLogger()
+
 # from peft import PeftConfig, PeftModel
 # from transformers import AutoModelForSeq2SeqLM, AutoModelForCausalLM, AutoTokenizer, AutoConfig
 import os
@@ -160,18 +163,18 @@ class HFModel(LM):
         assert not self.is_client
         # TODO: Add caching
         kwargs = {**openai_to_hf(**self.kwargs), **openai_to_hf(**kwargs)}
-        # print(prompt)
+        # logger.info(prompt)
         if isinstance(prompt, dict):
             try:
                 prompt = prompt["messages"][0]["content"]
             except (KeyError, IndexError, TypeError):
-                print("Failed to extract 'content' from the prompt.")
+                logger.info("Failed to extract 'content' from the prompt.")
         inputs = self.tokenizer(prompt, return_tensors="pt").to(self.device)
 
         if 'temperature' in kwargs and kwargs['temperature'] == 0.0:
             kwargs['do_sample'] = False
         
-        # print(kwargs)
+        # logger.info(kwargs)
         outputs = self.model.generate(**inputs, **kwargs)
         if self.drop_prompt_from_output:
             input_length = inputs.input_ids.shape[1]

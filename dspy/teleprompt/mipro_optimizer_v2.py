@@ -1,4 +1,7 @@
 import logging
+logger = logging.getLogger()
+
+import logging
 import os
 import pickle
 import random
@@ -193,16 +196,16 @@ class MIPROv2(Teleprompter):
             {YELLOW}Awaiting your input...{ENDC}
         """)
 
-        print(user_message)
+        logger.info(user_message)
 
         sys.stdout.flush()  # Flush the output buffer to force the message to print
 
         run = True
         if requires_permission_to_run:
-            print(user_confirmation_message)
+            logger.info(user_confirmation_message)
             user_input = input("Do you wish to continue? (y/n): ").strip().lower()
             if user_input != "y":
-                print("Compilation aborted by the user.")
+                logger.info("Compilation aborted by the user.")
                 run = False
 
         if run:
@@ -210,9 +213,9 @@ class MIPROv2(Teleprompter):
                 try:
                     self.program_code_string = get_dspy_source_code(student)
                     if self.verbose:
-                        print("SOURCE CODE:",self.program_code_string)
+                        logger.info("SOURCE CODE:",self.program_code_string)
                 except Exception as e:
-                    print(f"Error getting source code: {e}.\n\nRunning without program aware proposer.")
+                    logger.info(f"Error getting source code: {e}.\n\nRunning without program aware proposer.")
                     self.program_code_string = None
                     program_aware_proposer = False
             else:
@@ -279,8 +282,8 @@ class MIPROv2(Teleprompter):
                     metric_threshold=self.metric_threshold,
                 )
             except Exception as e:
-                print(f"Error generating fewshot examples: {e}")
-                print("Running without fewshot examples.")
+                logger.info(f"Error generating fewshot examples: {e}")
+                logger.info("Running without fewshot examples.")
                 demo_candidates = None
 
             # Generate N candidate prompts
@@ -382,9 +385,9 @@ class MIPROv2(Teleprompter):
                             p_new.demos = p_demo_candidates[demos_idx]
 
                     # Log assembled program
-                    print("CANDIDATE PROGRAM:")
+                    logger.info("CANDIDATE PROGRAM:")
                     print_full_program(candidate_program)
-                    print("...")
+                    logger.info("...")
 
                     # Save the candidate program
                     trial_logs[trial.number]["program_path"] = save_candidate_program(
@@ -400,14 +403,14 @@ class MIPROv2(Teleprompter):
                     )
 
                     # Print out a full trace of the program in use
-                    print("FULL TRACE")
+                    logger.info("FULL TRACE")
                     full_trace = get_task_model_history_for_full_example(
                         candidate_program, self.task_model, trainset, evaluate,
                     )
-                    print("...")
+                    logger.info("...")
 
                     # Log relevant information
-                    print(f"Score {score}")                
+                    logger.info(f"Score {score}")                
                     categorical_key = ",".join(map(str, chosen_params))
                     param_score_dict[categorical_key].append(
                         (score, candidate_program),
@@ -432,7 +435,7 @@ class MIPROv2(Teleprompter):
                     # Update the best program if the current score is better, and if we're not using minibatching
                     best_score_updated = False
                     if score > best_score and trial_logs[trial.number]["full_eval"] and not minibatch:
-                        print("Updating best score")
+                        logger.info("Updating best score")
                         best_score = score
                         best_program = candidate_program.deepcopy()
                         best_score_updated = True
@@ -462,7 +465,7 @@ class MIPROv2(Teleprompter):
                         trial_logs[trial.number]["score"] = full_train_score
                         
                         if full_train_score > best_score:
-                            print(f"UPDATING BEST SCORE WITH {full_train_score}")
+                            logger.info(f"UPDATING BEST SCORE WITH {full_train_score}")
                             best_score = full_train_score
                             best_program = highest_mean_program.deepcopy()
                             best_score_updated = True

@@ -1,3 +1,6 @@
+import logging
+logger = logging.getLogger()
+
 import os
 import warnings
 from typing import Any, Optional
@@ -22,7 +25,7 @@ def backoff_hdlr(details) -> None:
 
     See more at: https://pypi.org/project/backoff/
     """
-    print(  # noqa: T201
+    logger.info(  # noqa: T201
         "Backing off {wait:0.1f} seconds after {tries} tries calling function {target} with kwargs {kwargs}".format(
             **details,
         ),

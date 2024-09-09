@@ -1,3 +1,6 @@
+import logging
+logger = logging.getLogger()
+
 import random
 
 from pydantic import BaseModel
@@ -113,7 +116,7 @@ class Predict(Module, Parameter):
 
         if (temperature is None or temperature <= 0.15) and num_generations > 1:
             config["temperature"] = 0.7
-            # print(f"#> Setting temperature to 0.7 since n={num_generations} and prior temperature={temperature}.")
+            # logger.info(f"#> Setting temperature to 0.7 since n={num_generations} and prior temperature={temperature}.")
 
         if new_signature is not None:
             signature = new_signature
@@ -121,7 +124,7 @@ class Predict(Module, Parameter):
         if not all(k in kwargs for k in signature.input_fields):
             present = [k for k in signature.input_fields if k in kwargs]
             missing = [k for k in signature.input_fields if k not in kwargs]
-            print(f"WARNING: Not all input fields were provided to module. Present: {present}. Missing: {missing}.")
+            logger.info(f"WARNING: Not all input fields were provided to module. Present: {present}. Missing: {missing}.")
 
         if dsp.settings.experimental:
             completions = new_generate(lm, signature, dsp.Example(demos=demos, **kwargs), **config)

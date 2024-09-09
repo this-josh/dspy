@@ -1,3 +1,6 @@
+import logging
+logger = logging.getLogger()
+
 import os
 import tqdm
 import copy
@@ -12,7 +15,7 @@ def print_message(*s, condition=True, pad=False, sep=None):
 
     if condition:
         msg = msg if not pad else f"\n{msg}\n"
-        print(msg, flush=True, sep=sep)
+        logger.info(msg, flush=True, sep=sep)
 
     return msg
 
@@ -24,7 +27,7 @@ def timestamp(daydir=False):
 
 
 def file_tqdm(file):
-    print(f"#> Reading {file.name}")
+    logger.info(f"#> Reading {file.name}")
 
     with tqdm.tqdm(
         total=os.path.getsize(file.name) / 1024.0 / 1024.0, unit="MiB",
@@ -38,10 +41,10 @@ def file_tqdm(file):
 
 def create_directory(path):
     if os.path.exists(path):
-        print("\n")
+        logger.info("\n")
         print_message("#> Note: Output directory", path, "already exists\n\n")
     else:
-        print("\n")
+        logger.info("\n")
         print_message("#> Creating directory", path, "\n\n")
         os.makedirs(path)
 

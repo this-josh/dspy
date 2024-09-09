@@ -1,3 +1,6 @@
+import logging
+logger = logging.getLogger()
+
 # Adapted from: https://www.philschmid.de/fine-tune-flan-t5#3-fine-tune-and-evaluate-flan-t5
 
 import copy
@@ -96,7 +99,7 @@ def _preprocess_data(dataset, tokenizer, encoder_decoder_model, decoder_only_mod
         "completion": preprocess_completion(x["completion"], tokenizer, encoder_decoder_model, decoder_only_model, config['rationale']),
     })
     skipped = [x for x in dataset if x["completion"] is None]
-    print(f'# examples skipped due to parsing error: {len(skipped)} / {len(dataset)}')
+    logger.info(f'# examples skipped due to parsing error: {len(skipped)} / {len(dataset)}')
     dataset = dataset.filter(lambda x: x["completion"])
     return dataset
 
@@ -153,8 +156,8 @@ def _tokenize_dataset(dataset, tokenizer, encoder_decoder_model, decoder_only_mo
         kwargs = {"max_length" : max_length}
         tokenized_dataset = dataset.map(get_tokens_causal, batched=True, fn_kwargs=kwargs)
 
-    print(f"Dataset statistics: {kwargs}")
-    print(f"Keys of tokenized dataset: {list(tokenized_dataset.features)}")
+    logger.info(f"Dataset statistics: {kwargs}")
+    logger.info(f"Keys of tokenized dataset: {list(tokenized_dataset.features)}")
     return tokenized_dataset
 
 
@@ -362,7 +365,7 @@ def finetune_hf(data_path, target, config):
         dataset = _preprocess_data(dataset, tokenizer, encoder_decoder_model, decoder_only_model, config)
         tokenized_dataset = _tokenize_dataset(dataset, tokenizer, encoder_decoder_model, decoder_only_model)
         tokenized_dataset = tokenized_dataset.train_test_split(test_size=0.1)
-        print(f'Finetuning dataset: {tokenized_dataset}')
+        logger.info(f'Finetuning dataset: {tokenized_dataset}')
 
         # start training
         metric = evaluate.load("rouge")
@@ -371,5 +374,5 @@ def finetune_hf(data_path, target, config):
         elif decoder_only_model:
             best_model_checkpoint = _train_causal(model, tokenizer, tokenized_dataset, metric, config)
 
-    print(f'Best checkpoint of model: {best_model_checkpoint}')
+    logger.info(f'Best checkpoint of model: {best_model_checkpoint}')
     return best_model_checkpoint

@@ -1,3 +1,6 @@
+import logging
+logger = logging.getLogger()
+
 from abc import ABC, abstractmethod
 
 
@@ -129,7 +132,7 @@ class LM(ABC):
 
             printing_value += "\n\n\n"
 
-        print(printing_value)
+        logger.info(printing_value)
         return printing_value
 
     @abstractmethod

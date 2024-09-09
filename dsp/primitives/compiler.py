@@ -1,3 +1,6 @@
+import logging
+logger = logging.getLogger()
+
 # import os
 # import random
 # import subprocess
@@ -23,7 +26,7 @@
 #         return compilations_assumed_to_exist[jobname]
 
 #     command = f"""openai api fine_tunes.get -i {jobname}"""
-#     print(command)
+#     logger.info(command)
 
 #     result = subprocess.run(command.split(), stdout=subprocess.PIPE, check=False)
 #     output = result.stdout.decode("utf-8").strip()
@@ -34,7 +37,7 @@
 #             return output['fine_tuned_model']
 
 #         if output['status'] in ['pending', 'running']:
-#             print(f'Compiling, run ```openai api fine_tunes.follow -i {jobname}``` for details...')
+#             logger.info(f'Compiling, run ```openai api fine_tunes.follow -i {jobname}``` for details...')
 #             time.sleep(60)
 #             return openai_check_finetune(jobname)
 #     except:
@@ -82,7 +85,7 @@
 
 #     # Launch the fine-tune on the path
 #     command = f"""openai api fine_tunes.create -t {training_data_path} -m {target} --n_epochs 4 --learning_rate_multiplier 0.05 --no_check_if_files_exist"""
-#     print(command)
+#     logger.info(command)
 
 #     # command = """python script.py"""
 #     process = subprocess.Popen(command.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -99,11 +102,11 @@
 #     # assert cost[0] == '$'
     
 #     # if float(cost[1:]) > 300:
-#     #     print(f'Got cost {cost} -- you may wanna cancel the job: openai api fine_tunes.cancel -i {jobname}')
+#     #     logger.info(f'Got cost {cost} -- you may wanna cancel the job: openai api fine_tunes.cancel -i {jobname}')
 
-#     # print(cost)
+#     # logger.info(cost)
 
-#     print(jobname)
+#     logger.info(jobname)
 
 #     # Block until it's done
 #     ft = openai_check_finetune(jobname)
@@ -114,7 +117,7 @@
 
 
 # def openai_finetune(name, target):
-#     print(name)
+#     logger.info(name)
 #     training_data_path = name_to_path(name)
 #     training_data_path += '.model'
 
@@ -154,7 +157,7 @@
 #             f.write(ujson.dumps(line) + '\n')
 
 #     jobname, ft = openai_finetune(name, target)
-#     print(ft)
+#     logger.info(ft)
 
 #     ft = dsp.GPT3(model=ft, stop=" </s>")
 #     return ft

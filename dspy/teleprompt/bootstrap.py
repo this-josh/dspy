@@ -1,3 +1,6 @@
+import logging
+logger = logging.getLogger()
+
 import random
 import threading
 from typing import Dict, Optional
@@ -156,7 +159,7 @@ class BootstrapFewShot(Teleprompter):
                     if success:
                         bootstrapped[example_idx] = True
 
-        print(
+        logger.info(
             f"Bootstrapped {len(bootstrapped)} full traces after {example_idx + 1} examples in round {round_idx}.",
         )
 
@@ -221,11 +224,11 @@ class BootstrapFewShot(Teleprompter):
                     continue  # FIXME: !
 
                     # # TODO: Look closer into this. It's a bit tricky to reproduce.
-                    # print(f"Failed to find predictor {predictor} in {self.predictor2name}.")
-                    # print(
+                    # logger.info(f"Failed to find predictor {predictor} in {self.predictor2name}.")
+                    # logger.info(
                     #     "Are you doing this in a notebook (Jupyter)? This might be caused by redefining values by rerunning cells.",
                     # )
-                    # print("Try restarting the notebook, or open an issue.")
+                    # logger.info("Try restarting the notebook, or open an issue.")
                     # raise KeyError(
                     #     f"Failed to find predictor {id(predictor)} {predictor} in {self.predictor2name}.",
                     # ) from e

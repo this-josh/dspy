@@ -1,3 +1,6 @@
+import logging
+logger = logging.getLogger()
+
 # # To Run:
 # # python -m dsp.modules.hf_server --port 4242 --model "google/flan-t5-base"
 
@@ -40,7 +43,7 @@
 # parser.add_argument("--model", type=str, required=True, help="Hugging Face model")
 # args = parser.parse_args()
 # # TODO: Convert this to a log message
-# print(f"#> Loading the language model {args.model}")
+# logger.info(f"#> Loading the language model {args.model}")
 # lm = HFModel(args.model)
 
 
@@ -49,13 +52,13 @@
 #     global lm
 #     generateStart = time.time()
 #     # TODO: Convert this to a log message
-#     print(f'#> kwargs: "{kwargs}" (type={type(kwargs)})')
+#     logger.info(f'#> kwargs: "{kwargs}" (type={type(kwargs)})')
 #     response = lm._generate(prompt, **kwargs)
 #     # TODO: Convert this to a log message
-#     print(f'#> Response: "{response}"')
+#     logger.info(f'#> Response: "{response}"')
 #     latency = (time.time() - generateStart) * 1000.0
 #     response["latency"] = latency
-#     print(f'#> Latency:', '{:.3f}'.format(latency / 1000.0), 'seconds')
+#     logger.info(f'#> Latency:', '{:.3f}'.format(latency / 1000.0), 'seconds')
 #     return response
 
 

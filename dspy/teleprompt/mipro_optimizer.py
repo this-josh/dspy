@@ -1,3 +1,6 @@
+import logging
+logger = logging.getLogger()
+
 import math
 import random
 import sys
@@ -158,18 +161,18 @@ class MIPRO(Teleprompter):
     def _print_full_program(self, program):
         for i, predictor in enumerate(program.predictors()):
             if self.verbose:
-                print(f"Predictor {i}")
+                logger.info(f"Predictor {i}")
             if self.verbose:
-                print(f"i: {self._get_signature(predictor).instructions}")
+                logger.info(f"i: {self._get_signature(predictor).instructions}")
             *_, last_field = self._get_signature(predictor).fields.values()
             if self.verbose:
-                print(f"p: {last_field.json_schema_extra['prefix']}")
+                logger.info(f"p: {last_field.json_schema_extra['prefix']}")
             if self.verbose:
-                print("\n")
+                logger.info("\n")
 
     def _print_model_history(self, model, n=1):
         if self.verbose:
-            print(f"Model ({model}) History:")
+            logger.info(f"Model ({model}) History:")
         model.inspect_history(n=n)
 
     def _observe_data(self, trainset, max_iterations=10):
@@ -401,17 +404,17 @@ class MIPRO(Teleprompter):
             {YELLOW}Awaiting your input...{ENDC}
         """)
 
-        print(f"""{RED}{BOLD}WARNING: MIPRO has been deprecated and replaced with MIPROv2.  MIPRO will be removed in a future release. {ENDC}""")
-        print(user_message)
+        logger.info(f"""{RED}{BOLD}WARNING: MIPRO has been deprecated and replaced with MIPROv2.  MIPRO will be removed in a future release. {ENDC}""")
+        logger.info(user_message)
 
         sys.stdout.flush()  # Flush the output buffer to force the message to print
 
         run = True
         if requires_permission_to_run:
-            print(user_confirmation_message)
+            logger.info(user_confirmation_message)
             user_input = input("Do you wish to continue? (y/n): ").strip().lower()
             if user_input != "y":
-                print("Compilation aborted by the user.")
+                logger.info("Compilation aborted by the user.")
                 run = False
 
         if run:
@@ -439,7 +442,7 @@ class MIPRO(Teleprompter):
                         demo_candidates[id(module_p)].append([])
                 else:
                     if self.verbose:
-                        print(f"Creating basic bootstrap: {i}/{self.num_candidates-1}")
+                        logger.info(f"Creating basic bootstrap: {i}/{self.num_candidates-1}")
 
                     # Create a new basic bootstrap few - shot program .
                     rng = random.Random(i)
@@ -487,7 +490,7 @@ class MIPRO(Teleprompter):
                     candidate_program = baseline_program.deepcopy()
 
                     # Suggest the instruction to use for our predictor
-                    print(f"Starting trial #{trial_num}")
+                    logger.info(f"Starting trial #{trial_num}")
                     trial_logs[trial_num] = {}
 
                     for p_old, p_new in zip(baseline_program.predictors(), candidate_program.predictors()):
@@ -533,7 +536,7 @@ class MIPRO(Teleprompter):
                             p_new.demos = selected_demos
 
                     if self.verbose:
-                        print("Evaling the following program:")
+                        logger.info("Evaling the following program:")
                     if self.verbose:
                         self._print_full_program(candidate_program)
                     trial_logs[trial_num]["program"] = candidate_program
@@ -549,25 +552,25 @@ class MIPRO(Teleprompter):
                         split_trainset = trainset[start_index:end_index]
                         split_score = evaluate(candidate_program, devset=split_trainset, display_table=0)
                         if self.verbose:
-                            print(f"{i}st split score: {split_score}")
+                            logger.info(f"{i}st split score: {split_score}")
 
                         total_score += split_score * len(split_trainset)
                         curr_weighted_avg_score = total_score / min((i + 1) * 100, len(trainset))
                         if self.verbose:
-                            print(f"curr average score: {curr_weighted_avg_score}")
+                            logger.info(f"curr average score: {curr_weighted_avg_score}")
 
                         trial.report(curr_weighted_avg_score, i)
 
                         # Handle pruning based on the intermediate value.
                         if trial.should_prune():
-                            print("Trial pruned.")
+                            logger.info("Trial pruned.")
                             trial_logs[trial_num]["score"] = curr_weighted_avg_score
                             trial_logs[trial_num]["pruned"] = True
                             trial_num += 1
                             raise optuna.TrialPruned()
 
                     if self.verbose:
-                        print(f"Fully evaled score: {curr_weighted_avg_score}")
+                        logger.info(f"Fully evaled score: {curr_weighted_avg_score}")
                     if self.verbose:
                         self._print_model_history(self.task_model, n=1)
                     score = curr_weighted_avg_score
@@ -595,6 +598,6 @@ class MIPRO(Teleprompter):
             if best_program is not None and self.track_stats:
                 best_program.trial_logs = trial_logs
 
-            print(f"Returning {best_program} from continue_program")
+            logger.info(f"Returning {best_program} from continue_program")
             return best_program
         return None

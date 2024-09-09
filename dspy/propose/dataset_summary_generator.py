@@ -1,3 +1,6 @@
+import logging
+logger = logging.getLogger()
+
 import re
 
 import dspy
@@ -62,7 +65,7 @@ def create_dataset_summary(trainset, view_data_batch_size, prompt_model, log_fil
             calls+=1
             if calls >= max_calls:
                 break
-            print(f"b: {b}")
+            logger.info(f"b: {b}")
             upper_lim = min(len(trainset), b+view_data_batch_size)
             with dspy.settings.context(lm=prompt_model):
                 output = dspy.Predict(DatasetDescriptorWithPriorObservations, n=1, temperature=1.0)(prior_observations=observations, examples=order_input_keys_in_string(trainset[b:upper_lim].__repr__()))
@@ -76,11 +79,11 @@ def create_dataset_summary(trainset, view_data_batch_size, prompt_model, log_fil
             if log_file: 
                 log_file.write(f"observations {observations}\n")
     except Exception as e:
-        print(f"e {e}. using observations from past round for a summary.")
+        logger.info(f"e {e}. using observations from past round for a summary.")
 
     with dspy.settings.context(lm=prompt_model):
         summary = dspy.Predict(ObservationSummarizer, n=1, temperature=1.0)(observations=observations)
-    print(f"summary: {summary}")
+    logger.info(f"summary: {summary}")
     if log_file:
         log_file.write(f"summary: {summary}\n")
 

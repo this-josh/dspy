@@ -1,4 +1,7 @@
 import logging
+logger = logging.getLogger()
+
+import logging
 import os
 from typing import Any, Optional
 
@@ -20,7 +23,7 @@ BASE_URL = "https://api.anthropic.com/v1/messages"
 
 def backoff_hdlr(details):
     """Handler from https://pypi.org/project/backoff/."""
-    print(
+    logger.info(
         "Backing off {wait:0.1f} seconds after {tries} tries "
         "calling function {target} with kwargs "
         "{kwargs}".format(**details),

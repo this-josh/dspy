@@ -1,3 +1,6 @@
+import logging
+logger = logging.getLogger()
+
 """Module for interacting with Snowflake Cortex."""
 import json
 from typing import Any
@@ -18,7 +21,7 @@ except ImportError:
 
 def backoff_hdlr(details) -> None:
     """Handler from https://pypi.org/project/backoff ."""
-    print(
+    logger.info(
         f"Backing off {details['wait']:0.1f} seconds after {details['tries']} tries ",
         f"calling function {details['target']} with kwargs",
         f"{details['kwargs']}",

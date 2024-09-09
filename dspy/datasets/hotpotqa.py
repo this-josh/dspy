@@ -1,3 +1,6 @@
+import logging
+logger = logging.getLogger()
+
 import random
 
 from datasets import load_dataset
@@ -64,15 +67,15 @@ if __name__ == '__main__':
     data_args = dotdict(train_seed=1, train_size=16, eval_seed=2023, dev_size=200*5, test_size=0)
     dataset = HotPotQA(**data_args)
 
-    print(dataset)
-    print(dataset.train[0].question)
-    print(dataset.train[15].question)
+    logger.info(dataset)
+    logger.info(dataset.train[0].question)
+    logger.info(dataset.train[15].question)
 
-    print(len(dataset.train), len(dataset.dev), len(dataset.test))
+    logger.info(len(dataset.train), len(dataset.dev), len(dataset.test))
 
-    print(dataset.dev[0].question)
-    print(dataset.dev[340].question)
-    print(dataset.dev[937].question)
+    logger.info(dataset.dev[0].question)
+    logger.info(dataset.dev[340].question)
+    logger.info(dataset.dev[937].question)
 
 """
 What was the population of the city where Woodward Avenue ends in 2010?

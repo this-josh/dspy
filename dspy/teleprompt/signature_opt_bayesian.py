@@ -1,3 +1,6 @@
+import logging
+logger = logging.getLogger()
+
 from dspy.teleprompt.mipro_optimizer import MIPRO
 
 """
@@ -48,7 +51,7 @@ class BayesianSignatureOptimizer(MIPRO):
         track_stats=True,
         view_data_batch_size=10,
     ):
-        print(
+        logger.info(
             "\u001b[31m[WARNING] BayesianSignatureOptimizer has been deprecated and replaced with MIPRO.  BayesianSignatureOptimizer will be removed in a future release. \u001b[31m",
         )
 

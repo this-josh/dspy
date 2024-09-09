@@ -1,3 +1,6 @@
+import logging
+logger = logging.getLogger()
+
 import re
 from copy import deepcopy
 from typing import Any, Callable, Dict, List, Optional
@@ -78,7 +81,7 @@ class DSPyPromptTemplate(BasePromptTemplate):
     ) -> None:
         template = signature_to_template(predict_module.signature)
         template_vars = _input_keys_from_template(template)
-        # print(f"TEMPLATE VARS: {template_vars}")
+        # logger.info(f"TEMPLATE VARS: {template_vars}")
         # raise Exception
 
         super().__init__(
