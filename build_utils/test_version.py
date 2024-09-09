@@ -1,3 +1,6 @@
+import logging
+logger = logging.getLogger()
+
 import sys
 from datetime import datetime
 
@@ -57,4 +60,4 @@ if __name__ == "__main__":
         new_version = latest_version
 
     # Output new version
-    print(new_version)  
+    logger.info(new_version)  
