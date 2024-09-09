@@ -1,5 +1,5 @@
 import logging
-logger = logging.getLogger()
+logger = logging.getLogger(__name__)
 
 import random
 import threading
@@ -211,7 +211,7 @@ class BootstrapFewShot(Teleprompter):
                 current_error_count = self.error_count
             if current_error_count >= self.max_errors:
                 raise e
-            dspy.logger.error(f"Failed to run or to evaluate example {example} with {self.metric} due to {e}.")
+            logger.error(f"Failed to run or to evaluate example {example} with {self.metric} due to {e}.")
 
         if success:
             for step in trace:

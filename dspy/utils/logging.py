@@ -96,5 +96,5 @@ def show_logging(level: str = level) -> None:
     logging.getLogger("backoff").setLevel(logging.WARNING)
 
 
-settings = LogSettings(output_type="str", method="console", file_name=None)
+settings = LogSettings(output_type="str", method="file", file_name="/home/jak121/git/llm-news-sentiment/ruff.log")
 set_log_output = settings.set_log_output

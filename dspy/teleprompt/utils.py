@@ -1,5 +1,5 @@
 import logging
-logger = logging.getLogger()
+logger = logging.getLogger(__name__)
 
 import inspect
 import logging
@@ -229,7 +229,7 @@ def setup_logging(log_dir):
     if log_dir is None:
         return
     # Create a logger
-    logger = logging.getLogger()
+    logger = logging.getLogger(__name__)
     logger.setLevel(logging.DEBUG)
 
     # Create a file handler that logs debug and higher level messages

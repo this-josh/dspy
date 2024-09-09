@@ -1,5 +1,5 @@
 import logging
-logger = logging.getLogger()
+logger = logging.getLogger(__name__)
 
 # # To Run:
 # # python -m dsp.modules.hf_server --port 4242 --model "google/flan-t5-base"
